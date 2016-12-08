@@ -34,13 +34,7 @@ gSub<-function(abstract) {
   abstract = gsub("\u201c","",abstract)
   abstract = gsub("\u201d","",abstract)
   abstract = gsub("&quot","",abstract)
-  #   abstract = gsub("&lt","",abstract)
-  #   abstract = gsub("&gt","",abstract)
-  #    abstract = gsub("<b1>","",abstract)
   abstract = gsub("[/]"," ", abstract)
-  #   abstract = gsub('[[:punct:]]', '', abstract)
-  #   abstract = gsub('[[:cntrl:]]', '', abstract)
-  #   abstract = gsub('\\d+', '', abstract)
   
   return (abstract)
 }
@@ -101,7 +95,7 @@ mutation.symbols<-function(disease) {
   disease<-gsub("q=","",disease)
   disease<-gsub(" ","%20",disease)
   
-  url<-paste("http://www.geneup.com/rest/v1/DiseaseMutations/",disease,"?auth_name=nus_test&auth_key=7ab014decd2549a36e7ae8aead289733",sep="")
+  url<-paste("http://www.abc.com/",disease,"?auth_name=&auth_key=",sep="")
   diseaseOnto<-jsonlite::fromJSON(url,flatten=T)
   
   mutationSymbol<-diseaseOnto$mutation.biomarker.symbol
@@ -123,7 +117,7 @@ mutation.details<-function(disease){
   disease<-gsub("q=","",disease)
   disease<-gsub(" ","%20",disease)
   
-  url<-paste("http://www.geneup.com/rest/v1/DiseaseMutations/",disease,"?auth_name=nus_test&auth_key=7ab014decd2549a36e7ae8aead289733",sep="")
+  url<-paste("http://www.abc.com/",disease,"?auth_name=&auth_key=",sep="")
   diseaseOnto<-jsonlite::fromJSON(url,flatten=T)
   
   mutationDetails<-diseaseOnto$mutation.mutationDetails
@@ -151,7 +145,6 @@ transform2df = function(sentences,col.names,mining.set,lexi,read.cat,.progress='
     
     word.list = str_split(sentence$content, '\\s+')
     words = unlist(word.list)
-#   words = wordStem(words,language = "english")
     
     cat.matches<-match(words, lexi)
     cat.matches.id<-unique(sort(cat.matches))
@@ -171,7 +164,6 @@ transform2df = function(sentences,col.names,mining.set,lexi,read.cat,.progress='
 }
 
 transposeDF<-function(tfidf,read.cat) {
-  #tfidf$term<-sapply(tfidf$term,as.character)
   term<-tfidf$term
   tfidf[!is.na(tfidf)]<-"Y"
   tfidf[is.na(tfidf)]<-"N"
@@ -258,19 +250,11 @@ calc_cosine = function(train, test, doc_no)
   return(cos)
 }
 
-#omega<-10
-
 # Word Count
 class_wordcount = function(query, abstracts, rp.tfidf, dr.tfidf, list)
 {
   mutation.symbol.words = character(0)
   mutation.details.words = character(0)
-  
-  #if (!is.null(query)) #fix me: add me back
-  #{
-  #  mutation.symbol.words<-mutation.symbols(query)
-  #  mutation.details.words<-mutation.details(query)
-  #}
   
   rp.words<-rp.tfidf$term
   dr.words<-dr.tfidf$term
